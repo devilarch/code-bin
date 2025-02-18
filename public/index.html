@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeBin - Modern Pastebin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CodeBin</h1>
+            <p>A modern pastebin for your code snippets</p>
+        </header>
+
+        <div class="editor-container">
+            <div class="options-bar">
+                <div>
+                    <select id="expiration">
+                        <option value="10m">Expire in 10 minutes</option>
+                        <option value="1h">Expire in 1 hour</option>
+                        <option value="1d">Expire in 1 day</option>
+                        <option value="1w">Expire in 1 week</option>
+                        <option value="never" selected>Never expire</option>
+                    </select>
+                </div>
+                <button onclick="createPaste()">Create Paste</button>
+            </div>
+            <textarea id="code-editor" placeholder="Paste your code or text here..."></textarea>
+        </div>
+
+        <div class="paste-viewer" id="paste-viewer" style="display: none;">
+            <div class="options-bar">
+                <button onclick="window.location.href='/index.html'">New Paste</button>
+            </div>
+            <pre><code id="paste-content"></code></pre>
+        </div>
+
+        <div class="result-container" id="result">
+            <div class="url-display">
+                <input type="text" id="paste-url" readonly>
+                <button onclick="copyToClipboard()">Copy</button>
+            </div>
+        </div>
+
+        <div class="notification" id="notification"></div>
+    </div>
+
+    <script src="/scripts/app.js"></script>
+</body>
+</html>

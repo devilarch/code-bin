@@ -1,0 +1,79 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const path = window.location.hash.substr(1);
+    if (path.startsWith('/pastes/')) {
+        const pasteId = path.split('/')[2];
+        loadPaste(pasteId);
+    }
+});
+
+async function createPaste() {
+    const content = document.getElementById('code-editor').value;
+    const expiration = document.getElementById('expiration').value;
+
+    if (!content) {
+        showNotification('Please enter some content!');
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:4000/api/pastes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({content})
+        });
+
+        if (!response.ok) throw new Error('Failed to create paste');
+
+        const data = await response.json();
+        window.location.hash = `#/paste/${data.slug}`;
+        showResult(window.location.href);
+    } catch (error) {
+        showNotification(error.message || 'Failed to create paste');
+    }
+}
+
+async function loadPaste(pasteId) {
+    try {
+        const response = await fetch(`http://localhost:4000/api/pastes/${pasteId}`);
+        if (!response.ok) throw new Error('Paste not found or expired');
+
+        const data = await response.json();
+
+        document.querySelector('.editor-container').style.display = 'none';
+        document.getElementById('result').style.display = 'none';
+
+        const viewer = document.getElementById('paste-viewer');
+        viewer.style.display = 'block';
+        document.getElementById('paste-content').textContent = data.content;
+
+        document.title = `CodeBin - ${pasteId}`;
+    } catch (error) {
+        showNotification(error.message);
+        setTimeout(() => window.location = '/', 2000);
+    }
+}
+
+function showResult(url) {
+    const resultContainer = document.getElementById('result');
+    const urlInput = document.getElementById('paste-url');
+    urlInput.value = url;
+    resultContainer.style.display = 'block';
+    window.location.hash = '#result';
+}
+
+function copyToClipboard() {
+    const urlInput = document.getElementById('paste-url');
+    navigator.clipboard.writeText(urlInput.value);
+    showNotification('URL copied to clipboard!', true);
+}
+
+function showNotification(message, isSuccess = false) {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.style.backgroundColor = isSuccess ? '#10b981' : '#ef4444';
+    notification.style.display = 'block';
+
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 3000);
+}
