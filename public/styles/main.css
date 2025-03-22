@@ -391,59 +391,158 @@ select:hover {
     body {
         padding: 1rem;
     }
-    
+
     header {
         flex-direction: column;
-        text-align: center;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 2rem;
     }
 
     .header-content {
-        text-align: center;
+        width: 100%;
     }
-    
+
     h1 {
         font-size: 2rem;
-        justify-content: center;
     }
-    
+
+    .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
     .options-bar {
         flex-direction: column;
         gap: 1rem;
+        padding: 1rem;
     }
 
     .left-options, .right-options {
         width: 100%;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    select {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+    }
+
+    .editor-wrapper {
+        flex-direction: column;
+    }
+
+    .line-numbers {
+        width: 100%;
+        padding: 0.5rem;
+        text-align: left;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    #code-editor {
+        min-height: 250px;
+        font-size: 16px;
+    }
+
+    .paste-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .paste-info {
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .paste-actions {
+        width: 100%;
+        flex-wrap: wrap;
         justify-content: space-between;
     }
 
     .url-display {
-        flex-direction: column;
-    }
-
-    .btn-primary, .btn-secondary {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .share-options {
-        flex-direction: column;
-    }
-
-    .editor-stats {
         flex-direction: column;
         gap: 0.5rem;
     }
 
     #paste-url {
         width: 100%;
+        font-size: 1rem;
     }
-    
+
     .share-options {
-        flex-direction: column;
-    }
-    
-    .share-options button {
         width: 100%;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .share-options button {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .stats-panel {
+        padding: 1rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .modal-content {
+        width: 90%;
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .shortcuts-list {
+        padding: 1rem;
+    }
+
+    .shortcut-item {
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 0.5rem;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    select {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    #code-editor {
+        font-size: 14px;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
     }
 }
 
