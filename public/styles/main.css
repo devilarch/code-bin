@@ -192,6 +192,21 @@ select:hover {
     text-align: right;
 }
 
+.line-numbers {
+    padding: 1rem 0.75rem;
+    text-align: right;
+    background: var(--line-numbers-bg);
+    color: var(--line-numbers-color);
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    min-width: 2.5rem;
+    user-select: none;
+    white-space: pre;
+    line-height: 1.5;
+    border-right: 1px solid var(--border-color);
+    opacity: 0.8;
+}
+
 #code-editor {
     flex: 1;
     padding: 1rem;
@@ -206,20 +221,7 @@ select:hover {
     white-space: pre;
     tab-size: 4;
     outline: none;
-}
-
-.line-numbers {
-    padding: 1rem 0.5rem;
-    text-align: right;
-    background: var(--line-numbers-bg);
-    color: var(--line-numbers-color);
-    font-family: 'Fira Code', monospace;
-    font-size: 14px;
-    min-width: 40px;
-    user-select: none;
-    white-space: pre;
-    line-height: 1.5;
-    border-right: 1px solid var(--border-color);
+    overflow-x: auto;
 }
 
 .paste-viewer {
@@ -227,34 +229,42 @@ select:hover {
     border-radius: 12px;
     box-shadow: var(--shadow-lg);
     overflow: hidden;
-    margin-bottom: 2rem;
+    margin: 2rem auto;
+    display: block;
+    width: 100%;
+    max-width: 1000px;
 }
 
 .paste-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 1.25rem 1.5rem;
     background: var(--editor-bg);
     border-bottom: 1px solid var(--border-color);
 }
 
 .paste-info {
     display: flex;
-    gap: 0.75rem;
+    gap: 1rem;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .paste-actions {
     display: flex;
-    gap: 0.75rem;
+    gap: 1rem;
+    align-items: center;
 }
 
 .badge {
-    padding: 0.35rem 0.75rem;
+    padding: 0.5rem 1rem;
     border-radius: 9999px;
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .language-badge {
@@ -263,30 +273,46 @@ select:hover {
     opacity: 0.9;
 }
 
-.expiry-badge {
+.expiry-badge, .views-badge {
     background: var(--secondary-color);
     color: white;
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 .paste-content-wrapper {
     display: flex;
     background: var(--editor-bg);
     overflow: auto;
-    max-height: 80vh;
+    max-height: calc(100vh - 200px);
+    min-height: 300px;
+    position: relative;
+}
+
+.paste-content-wrapper .line-numbers {
+    position: sticky;
+    left: 0;
+    top: 0;
+    height: 100%;
+    z-index: 1;
+    padding: 1rem;
+    min-width: 50px;
+    background: var(--line-numbers-bg);
+    border-right: 1px solid var(--border-color);
 }
 
 #paste-content {
     flex: 1;
     margin: 0;
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     white-space: pre;
     font-family: 'Fira Code', monospace;
-    font-size: 0.9rem;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    line-height: 1.6;
     color: var(--paste-text);
     overflow-x: auto;
     background: var(--editor-bg);
+    width: 100%;
+    min-width: 0;
 }
 
 .result-container {
@@ -439,37 +465,64 @@ select:hover {
     }
 
     .editor-wrapper {
-        flex-direction: column;
+        flex-direction: row;
     }
 
     .line-numbers {
-        width: 100%;
-        padding: 0.5rem;
-        text-align: left;
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
+        padding: 1rem 0.5rem;
+        min-width: 2.5rem;
+        text-align: right;
+        border-right: 1px solid var(--border-color);
+        border-bottom: none;
+        position: sticky;
+        left: 0;
+        z-index: 1;
     }
 
     #code-editor {
-        min-height: 250px;
-        font-size: 16px;
+        min-height: 200px;
+        font-size: 14px;
+        padding: 1rem;
+    }
+
+    .paste-viewer {
+        margin: 1rem auto;
+        border-radius: 8px;
     }
 
     .paste-header {
+        padding: 1rem;
         flex-direction: column;
         gap: 1rem;
-        align-items: flex-start;
     }
 
     .paste-info {
-        flex-wrap: wrap;
-        width: 100%;
+        gap: 0.75rem;
     }
 
     .paste-actions {
         width: 100%;
-        flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content: flex-start;
+    }
+
+    .paste-content-wrapper {
+        min-height: 200px;
+        max-height: calc(100vh - 150px);
+    }
+
+    .paste-content-wrapper .line-numbers {
+        padding: 0.75rem;
+        min-width: 40px;
+    }
+
+    #paste-content {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .badge {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
     }
 
     .url-display {
@@ -515,6 +568,41 @@ select:hover {
     .shortcut-item {
         padding: 0.75rem;
     }
+
+    .paste-content-wrapper {
+        flex-direction: column;
+    }
+
+    .paste-content-wrapper .line-numbers {
+        position: relative;
+        width: 100%;
+        padding: 0.5rem;
+        text-align: left;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    #paste-content {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 14px;
+    }
+
+    .paste-header {
+        padding: 0.75rem;
+    }
+
+    .paste-info {
+        gap: 0.5rem;
+    }
+
+    .paste-actions {
+        gap: 0.5rem;
+    }
+
+    .badge {
+        padding: 0.25rem 0.5rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -536,13 +624,38 @@ select:hover {
         font-size: 0.9rem;
     }
 
+    .line-numbers {
+        padding: 1rem 0.35rem;
+        min-width: 2rem;
+        font-size: 12px;
+    }
+
     #code-editor {
-        font-size: 14px;
+        font-size: 13px;
+        padding: 1rem 0.75rem;
+    }
+
+    .paste-viewer {
+        margin: 0.5rem auto;
+    }
+
+    .paste-header {
+        padding: 0.75rem;
+    }
+
+    .paste-content-wrapper {
+        min-height: 150px;
+    }
+
+    #paste-content {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+        line-height: 1.5;
     }
 
     .badge {
+        padding: 0.35rem 0.6rem;
         font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
     }
 }
 
