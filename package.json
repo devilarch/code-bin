@@ -1,11 +1,12 @@
 {
   "name": "paste-bin",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "cleanup": "node ./scripts/cleanupExpired.js"
+    "cleanup": "node ./scripts/cleanupExpired.js",
+    "vercel-build": "echo 'Build step completed'"
   },
   "keywords": [],
   "author": "",

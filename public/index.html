@@ -4,49 +4,172 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CodeBin - Modern Pastebin</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Prism CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>CodeBin</h1>
-            <p>A modern pastebin for your code snippets</p>
+            <div class="header-content">
+                <h1><i class="fas fa-code"></i> CodeBin</h1>
+                <p>A modern pastebin for your code snippets</p>
+            </div>
+            <div class="header-actions">
+                <button id="toggle-theme" class="btn-secondary">
+                    <i class="fas fa-moon"></i> Toggle Theme
+                </button>
+                <button id="show-shortcuts" class="btn-secondary">
+                    <i class="fas fa-keyboard"></i> Shortcuts
+                </button>
+            </div>
         </header>
 
         <div class="editor-container">
             <div class="options-bar">
-                <div>
+                <div class="left-options">
+                    <select id="language">
+                        <option value="plaintext">Plain Text</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="python">Python</option>
+                        <option value="html">HTML</option>
+                        <option value="css">CSS</option>
+                        <option value="cpp">C++</option>
+                        <option value="java">Java</option>
+                        <option value="csharp">C#</option>
+                        <option value="php">PHP</option>
+                        <option value="ruby">Ruby</option>
+                        <option value="go">Go</option>
+                        <option value="rust">Rust</option>
+                        <option value="swift">Swift</option>
+                        <option value="kotlin">Kotlin</option>
+                    </select>
                     <select id="expiration">
-                        <option value="10m">Expire in 10 minutes</option>
-                        <option value="1h">Expire in 1 hour</option>
-                        <option value="1d">Expire in 1 day</option>
-                        <option value="1w">Expire in 1 week</option>
-                        <option value="never" selected>Never expire</option>
+                        <option value="never">Never expire</option>
+                        <option value="10m">10 minutes</option>
+                        <option value="1h">1 hour</option>
+                        <option value="1d">1 day</option>
+                        <option value="1w">1 week</option>
+                        <option value="1m">1 month</option>
                     </select>
                 </div>
-                <button onclick="createPaste()">Create Paste</button>
+                <div class="right-options">
+                    <button id="clear-editor" class="btn-secondary">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                    <button id="create-paste" class="btn-primary">
+                        <i class="fas fa-save"></i> Create Paste
+                    </button>
+                </div>
             </div>
-            <textarea id="code-editor" placeholder="Paste your code or text here..."></textarea>
+            <div class="editor-wrapper">
+                <div class="line-numbers"></div>
+                <textarea id="code-editor" spellcheck="false" placeholder="Enter your code here..."></textarea>
+            </div>
+            <div id="stats" class="editor-stats"></div>
         </div>
 
-        <div class="paste-viewer" id="paste-viewer" style="display: none;">
-            <div class="options-bar">
-                <button onclick="window.location.href='/index.html'">New Paste</button>
+        <div id="paste-viewer" class="paste-viewer" style="display: none;">
+            <div class="paste-header">
+                <div class="paste-info">
+                    <span id="viewer-language" class="badge language-badge">plaintext</span>
+                    <span id="viewer-expiry" class="badge expiry-badge">Never expires</span>
+                </div>
+                <div class="paste-actions">
+                    <button id="copy-button" class="btn-secondary" onclick="copyToClipboard()">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button id="new-paste" class="btn-primary" onclick="window.location.href='/'">
+                        <i class="fas fa-plus"></i> New Paste
+                    </button>
+                </div>
             </div>
-            <pre><code id="paste-content"></code></pre>
+            <div class="paste-content-wrapper">
+                <div class="line-numbers"></div>
+                <pre id="paste-content" class="language-plaintext"></pre>
+            </div>
         </div>
 
         <div class="result-container" id="result">
             <div class="url-display">
                 <input type="text" id="paste-url" readonly>
-                <button onclick="copyToClipboard()">Copy</button>
+                <button class="btn-primary">
+                    <i class="fas fa-copy"></i> Copy URL
+                </button>
+            </div>
+            <div class="share-options">
+                <button class="btn-secondary" onclick="window.open(document.getElementById('paste-url').value)">
+                    <i class="fas fa-external-link-alt"></i> Open Paste
+                </button>
+                <button class="btn-secondary" onclick="generateQR()">
+                    <i class="fas fa-qrcode"></i> QR Code
+                </button>
             </div>
         </div>
 
         <div class="notification" id="notification"></div>
     </div>
 
+    <!-- QR Code Modal -->
+    <div id="qr-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Scan to Share</h2>
+            <div id="qr-code"></div>
+        </div>
+    </div>
+
+    <!-- Keyboard Shortcuts Modal -->
+    <div id="shortcuts-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('shortcuts-modal').style.display='none'">&times;</span>
+            <h2>Keyboard Shortcuts</h2>
+            <div class="shortcuts-list">
+                <div class="shortcut-item">
+                    <span class="shortcut-desc">Save paste</span>
+                    <span class="shortcut-key">Ctrl/Cmd + S</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-desc">Toggle dark mode</span>
+                    <span class="shortcut-key">Ctrl/Cmd + D</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-desc">Clear editor</span>
+                    <span class="shortcut-key">Ctrl/Cmd + L</span>
+                </div>
+                <div class="shortcut-item">
+                    <span class="shortcut-desc">Show shortcuts</span>
+                    <span class="shortcut-key">Ctrl/Cmd + K</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ruby.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-go.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-swift.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-kotlin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="/scripts/app.js"></script>
 </body>
 </html>
