@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const shortid = require('shortid');
-const xss = require('xss');
 
 const pasteSchema = new mongoose.Schema({
   slug: {
@@ -10,8 +9,7 @@ const pasteSchema = new mongoose.Schema({
   },
   content: {
     type: String,
-    required: true,
-    set: (content) => xss(content) // Sanitize on save
+    required: true
   },
   createdAt: {
     type: Date,

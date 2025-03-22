@@ -5,8 +5,7 @@ const Paste = require('../models/Paste');
 exports.validatePaste = [
   body('content')
     .trim()
-    .notEmpty().withMessage('Content is required')
-    .escape(),
+    .notEmpty().withMessage('Content is required'),
   body('expiresAt')
     .optional()
     .isISO8601().withMessage('Invalid date format (use ISO8601)')
