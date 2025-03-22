@@ -6,13 +6,13 @@
     --background-color: #f8fafc;
     --text-color: #1f2937;
     --border-color: #e5e7eb;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    --editor-bg: #f3f4f6;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --editor-bg: #ffffff;
     --editor-text: #1f2937;
-    --line-numbers-bg: #e5e7eb;
-    --line-numbers-color: #6b7280;
+    --line-numbers-bg: #f8fafc;
+    --line-numbers-color: #64748b;
     --button-bg: #3b82f6;
     --button-hover: #2563eb;
     --button-text: #ffffff;
@@ -20,27 +20,29 @@
     --notification-success: #10b981;
     --notification-error: #ef4444;
     --stats-color: #64748b;
+    --paste-text: #1f2937;
 }
 
 [data-theme="dark"] {
     --primary-color: #60a5fa;
     --primary-hover: #3b82f6;
     --secondary-color: #94a3b8;
-    --background-color: #1f2937;
+    --background-color: #0f172a;
     --text-color: #f3f4f6;
-    --border-color: #374151;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-    --editor-bg: #111827;
+    --border-color: #1e293b;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+    --editor-bg: #1e293b;
     --editor-text: #f3f4f6;
-    --line-numbers-bg: #1f2937;
-    --line-numbers-color: #9ca3af;
+    --line-numbers-bg: #0f172a;
+    --line-numbers-color: #64748b;
     --button-bg: #3b82f6;
     --button-hover: #2563eb;
     --button-text: #ffffff;
     --modal-bg: rgba(0, 0, 0, 0.75);
     --stats-color: #94a3b8;
+    --paste-text: #f3f4f6;
 }
 
 * {
@@ -282,8 +284,9 @@ select:hover {
     font-family: 'Fira Code', monospace;
     font-size: 0.9rem;
     line-height: 1.5;
-    color: var(--text-color);
+    color: var(--paste-text);
     overflow-x: auto;
+    background: var(--editor-bg);
 }
 
 .result-container {
