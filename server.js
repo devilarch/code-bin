@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const compression = require('compression');
 const connectDB = require('./config/db');
 const pasteRoutes = require('./routes/pasteRoutes');
 const path = require("path");
@@ -13,7 +14,16 @@ app.set('trust proxy', 1);
 
 // Middleware
 app.use(cors());
+app.use(compression()); // Add gzip compression
 app.use(express.json());
+
+// Add cache control for static assets
+const cacheTime = 86400000 * 30; // 30 days
+app.use(express.static(path.join(__dirname, "public"), {
+  maxAge: cacheTime,
+  etag: true,
+  lastModified: true
+}));
 
 // Database
 connectDB();
@@ -27,12 +37,13 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Serve static files from the public dir
-app.use(express.static(path.join(__dirname, "public")));
-
 // Handle all routes for SPA
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"), {
+    maxAge: '1h',
+    etag: true,
+    lastModified: true
+  });
 });
 
 // Only start the server if we're not in a serverless environment
