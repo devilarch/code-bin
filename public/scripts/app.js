@@ -40,11 +40,8 @@ function updateLineNumbers(element) {
 
 // Get base API URL based on environment
 const getApiBaseUrl = () => {
-    // In production, use the actual domain
-    // In development, use localhost
-    return process.env.NODE_ENV === 'production' 
-        ? `${window.location.origin}/api`
-        : 'http://localhost:4000/api';
+    // Use relative path - this will work in both dev and prod
+    return '/api';
 };
 
 // Create paste
@@ -68,7 +65,10 @@ async function createPaste() {
             })
         });
 
-        if (!response.ok) throw new Error('Failed to create paste');
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || 'Failed to create paste');
+        }
 
         const data = await response.json();
         if (!data.slug) throw new Error('No paste ID received');
