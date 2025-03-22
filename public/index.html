@@ -77,14 +77,32 @@
                 <div class="paste-info">
                     <span id="viewer-language" class="badge language-badge">plaintext</span>
                     <span id="viewer-expiry" class="badge expiry-badge">Never expires</span>
+                    <span id="viewer-views" class="badge views-badge">
+                        <i class="fas fa-eye"></i> 0 views
+                    </span>
                 </div>
                 <div class="paste-actions">
                     <button id="copy-button" class="btn-secondary" onclick="copyToClipboard()">
                         <i class="fas fa-copy"></i> Copy
                     </button>
+                    <button id="stats-button" class="btn-secondary" onclick="toggleStats()">
+                        <i class="fas fa-chart-bar"></i> Stats
+                    </button>
                     <button id="new-paste" class="btn-primary" onclick="window.location.href='/'">
                         <i class="fas fa-plus"></i> New Paste
                     </button>
+                </div>
+            </div>
+            <div id="stats-panel" class="stats-panel" style="display: none;">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Total Views</div>
+                        <div id="total-views" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Created</div>
+                        <div id="created-at" class="stat-value">-</div>
+                    </div>
                 </div>
             </div>
             <div class="paste-content-wrapper">

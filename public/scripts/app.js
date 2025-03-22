@@ -8,11 +8,17 @@ const pasteViewer = document.getElementById('paste-viewer');
 const pasteContent = document.getElementById('paste-content');
 const viewerLanguage = document.getElementById('viewer-language');
 const viewerExpiry = document.getElementById('viewer-expiry');
+const viewerViews = document.getElementById('viewer-views');
+const statsPanel = document.getElementById('stats-panel');
 const notification = document.getElementById('notification');
 const searchBar = document.getElementById('search-bar');
 const searchInput = document.getElementById('search-input');
 const replaceInput = document.getElementById('replace-input');
 const shortcutsModal = document.getElementById('shortcuts-modal');
+
+// Stats elements
+const totalViews = document.getElementById('total-views');
+const createdAt = document.getElementById('created-at');
 
 // Stats update
 function updateStats() {
@@ -113,6 +119,42 @@ async function copyToClipboard() {
     }
 }
 
+// Toggle stats panel
+function toggleStats() {
+    const isHidden = statsPanel.style.display === 'none';
+    statsPanel.style.display = isHidden ? 'block' : 'none';
+    
+    // If showing stats panel, fetch latest statistics
+    if (isHidden) {
+        const pasteId = window.location.hash.split('/')[2];
+        fetchPasteStats(pasteId);
+    }
+}
+
+// Format date for display
+function formatDate(dateString) {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleString();
+}
+
+// Fetch paste statistics
+async function fetchPasteStats(pasteId) {
+    try {
+        const response = await fetch(`${getApiBaseUrl()}/pastes/${pasteId}/stats`);
+        if (!response.ok) throw new Error('Failed to fetch stats');
+        
+        const stats = await response.json();
+        
+        // Update stats display
+        totalViews.textContent = stats.views;
+        createdAt.textContent = formatDate(stats.createdAt);
+    } catch (error) {
+        console.error('Error fetching stats:', error);
+        showNotification('Failed to load statistics', 'error');
+    }
+}
+
 // Load paste
 async function loadPaste(pasteId) {
     try {
@@ -133,6 +175,14 @@ async function loadPaste(pasteId) {
         viewerExpiry.textContent = data.expiresAt ? 
             `Expires: ${new Date(data.expiresAt).toLocaleString()}` : 
             'Never expires';
+            
+        // Update view count
+        viewerViews.innerHTML = `<i class="fas fa-eye"></i> ${data.views || 0} views`;
+        
+        // If it's a new view, fetch updated statistics
+        if (data.isNewView) {
+            fetchPasteStats(pasteId);
+        }
         
         // Hide editor and show viewer
         document.querySelector('.editor-container').style.display = 'none';
