@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const compression = require('compression');
 const connectDB = require('./config/db');
 const pasteRoutes = require('./routes/pasteRoutes');
@@ -13,9 +14,10 @@ const PORT = process.env.PORT || 3000;
 app.set('trust proxy', 1);
 
 // Middleware
+app.use(helmet());
 app.use(cors());
-app.use(compression()); // Add gzip compression
-app.use(express.json());
+app.use(compression());
+app.use(express.json({ limit: '10kb' }));
 
 // Add cache control for static assets
 const cacheTime = 86400000 * 30; // 30 days

@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
-const shortid = require('shortid');
+const { nanoid } = require('nanoid');
 
 const pasteSchema = new mongoose.Schema({
   slug: {
     type: String,
     unique: true,
-    default: shortid.generate
+    default: () => nanoid(10)
   },
   content: {
     type: String,
@@ -32,6 +32,9 @@ const pasteSchema = new mongoose.Schema({
   }
 });
 
+// Index for faster lookups
+pasteSchema.index({ slug: 1 });
+
 // Method to check if IP has viewed this paste
 pasteSchema.methods.hasViewedFromIp = function(ip) {
   return this.viewerIps.some(viewer => viewer.ip === ip);
@@ -40,7 +43,7 @@ pasteSchema.methods.hasViewedFromIp = function(ip) {
 // Method to add a new viewer IP
 pasteSchema.methods.addViewerIp = function(ip) {
   if (!this.hasViewedFromIp(ip)) {
-    this.viewerIps.push({ ip });
+    this.viewerIps.push({ ip, timestamp: new Date() });
     this.views += 1;
     return true;
   }

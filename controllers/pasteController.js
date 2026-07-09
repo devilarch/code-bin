@@ -1,6 +1,9 @@
 const { body, validationResult } = require('express-validator');
 const Paste = require('../models/Paste');
 
+// Standard error response helper
+const errorResponse = (res, status, message) => res.status(status).json({ error: message });
+
 // Validation rules
 exports.validatePaste = [
   body('content')
@@ -16,15 +19,14 @@ exports.validatePaste = [
 exports.createPaste = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return errorResponse(res, 400, 'Validation failed');
   }
 
   try {
     const { content, expiresAt } = req.body;
     const paste = new Paste({ 
       content, 
-      expiresAt,
-      viewerIps: [] // Initialize empty viewer IPs array
+      expiresAt
     });
     await paste.save();
 
@@ -33,39 +35,34 @@ exports.createPaste = async (req, res) => {
       url: `${req.protocol}://${req.get('host')}/api/pastes/${paste.slug}`
     });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to create paste' });
+    console.error('Error creating paste:', error);
+    errorResponse(res, 500, 'Failed to create paste');
   }
 };
 
 exports.getPaste = async (req, res) => {
   try {
     const paste = await Paste.findOne({ slug: req.params.slug });
-    if (!paste) return res.status(404).json({ error: 'Paste not found' });
+    if (!paste) return errorResponse(res, 404, 'Paste not found');
     
     if (paste.expiresAt && paste.expiresAt <= new Date()) {
       await paste.deleteOne();
-      return res.status(410).json({ error: 'Paste has expired' });
+      return errorResponse(res, 410, 'Paste has expired');
     }
 
-    // Check if this IP has already viewed the paste
-    const hasViewed = paste.viewerIps.some(viewer => viewer.ip === req.clientIp);
-    
-    // If it's a new viewer, add their IP and increment the view count
-    if (!hasViewed) {
-      paste.viewerIps.push({ ip: req.clientIp, timestamp: new Date() });
-      paste.views = (paste.views || 0) + 1;
-      await paste.save();
-    }
+    // Use model method to check and add viewer
+    const isNewView = paste.addViewerIp(req.clientIp);
+    await paste.save();
 
     // Return paste with view info but without exposing IPs
     const response = paste.toObject();
     delete response.viewerIps; // Don't expose viewer IPs
-    response.isNewView = !hasViewed;
+    response.isNewView = isNewView;
     
     res.json(response);
   } catch (error) {
     console.error('Error retrieving paste:', error);
-    res.status(500).json({ error: 'Failed to retrieve paste' });
+    errorResponse(res, 500, 'Failed to retrieve paste');
   }
 };
 
@@ -73,11 +70,12 @@ exports.deletePaste = async (req, res) => {
   try {
     const result = await Paste.deleteOne({ slug: req.params.slug });
     if (result.deletedCount === 0) {
-      return res.status(404).json({ error: 'Paste not found' });
+      return errorResponse(res, 404, 'Paste not found');
     }
     res.json({ message: 'Paste deleted successfully' });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to delete paste' });
+    console.error('Error deleting paste:', error);
+    errorResponse(res, 500, 'Failed to delete paste');
   }
 };
 
@@ -88,7 +86,7 @@ exports.getPasteStats = async (req, res) => {
       .select('views createdAt viewerIps');
     
     if (!paste) {
-      return res.status(404).json({ error: 'Paste not found' });
+      return errorResponse(res, 404, 'Paste not found');
     }
 
     res.json({
@@ -100,6 +98,7 @@ exports.getPasteStats = async (req, res) => {
         : null
     });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to retrieve paste statistics' });
+    console.error('Error retrieving paste stats:', error);
+    errorResponse(res, 500, 'Failed to retrieve paste statistics');
   }
 };
