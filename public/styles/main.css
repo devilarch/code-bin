@@ -1,48 +1,70 @@
 :root {
-    /* Light theme variables */
-    --primary-color: #3b82f6;
-    --primary-hover: #2563eb;
-    --secondary-color: #64748b;
-    --background-color: #f8fafc;
-    --text-color: #1f2937;
-    --border-color: #e5e7eb;
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-    --editor-bg: #ffffff;
-    --editor-text: #1f2937;
-    --line-numbers-bg: #f8fafc;
-    --line-numbers-color: #64748b;
-    --button-bg: #3b82f6;
-    --button-hover: #2563eb;
+    /* Modern glassmorphism palette */
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --secondary-color: #8b5cf6;
+
+    /* Glass tokens */
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-bg-strong: rgba(255, 255, 255, 0.25);
+    --glass-border: rgba(255, 255, 255, 0.35);
+    --glass-blur: 16px;
+    --glass-shadow: 0 8px 32px rgba(31, 38, 135, 0.20);
+
+    --background-color: var(--glass-bg);
+    --text-color: #1e293b;
+    --border-color: rgba(255, 255, 255, 0.30);
+
+    --shadow-sm: 0 2px 8px rgba(31, 38, 135, 0.10);
+    --shadow-md: 0 6px 16px rgba(31, 38, 135, 0.15);
+    --shadow-lg: var(--glass-shadow);
+
+    /* Frosted code surface (kept dark for readability) */
+    --editor-bg: rgba(15, 23, 42, 0.55);
+    --editor-text: #f1f5f9;
+    --line-numbers-bg: rgba(15, 23, 42, 0.40);
+    --line-numbers-color: #94a3b8;
+
+    --button-bg: #6366f1;
+    --button-hover: #4f46e5;
     --button-text: #ffffff;
-    --modal-bg: rgba(0, 0, 0, 0.5);
+    --modal-bg: rgba(15, 23, 42, 0.40);
+    --modal-panel: rgba(255, 255, 255, 0.92);
     --notification-success: #10b981;
     --notification-error: #ef4444;
-    --stats-color: #64748b;
-    --paste-text: #1f2937;
+    --stats-color: #475569;
+    --paste-text: #f1f5f9;
 }
 
 [data-theme="dark"] {
-    --primary-color: #60a5fa;
-    --primary-hover: #3b82f6;
-    --secondary-color: #94a3b8;
-    --background-color: #0f172a;
-    --text-color: #f3f4f6;
-    --border-color: #1e293b;
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
-    --editor-bg: #1e293b;
-    --editor-text: #f3f4f6;
-    --line-numbers-bg: #0f172a;
+    --glass-bg: rgba(17, 25, 40, 0.45);
+    --glass-bg-strong: rgba(17, 25, 40, 0.60);
+    --glass-border: rgba(255, 255, 255, 0.14);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+
+    --primary-color: #818cf8;
+    --primary-hover: #6366f1;
+    --secondary-color: #a78bfa;
+    --background-color: var(--glass-bg);
+    --text-color: #f1f5f9;
+    --border-color: rgba(255, 255, 255, 0.14);
+
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.30);
+    --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.40);
+    --shadow-lg: var(--glass-shadow);
+
+    --editor-bg: rgba(2, 6, 23, 0.70);
+    --editor-text: #f1f5f9;
+    --line-numbers-bg: rgba(2, 6, 23, 0.50);
     --line-numbers-color: #64748b;
-    --button-bg: #3b82f6;
-    --button-hover: #2563eb;
+
+    --button-bg: #6366f1;
+    --button-hover: #818cf8;
     --button-text: #ffffff;
-    --modal-bg: rgba(0, 0, 0, 0.75);
+    --modal-bg: rgba(0, 0, 0, 0.60);
+    --modal-panel: rgba(17, 25, 40, 0.90);
     --stats-color: #94a3b8;
-    --paste-text: #f3f4f6;
+    --paste-text: #f1f5f9;
 }
 
 * {
@@ -53,12 +75,22 @@
 }
 
 body {
-    background-color: var(--background-color);
+    /* Animated gradient backdrop for the glass to sit on */
+    background: linear-gradient(-45deg, #6366f1, #8b5cf6, #ec4899, #f59e0b, #6366f1);
+    background-size: 400% 400%;
+    animation: gradientShift 18s ease infinite;
+    background-attachment: fixed;
     color: var(--text-color);
     min-height: 100vh;
     padding: 2rem;
     line-height: 1.5;
-    transition: background-color 0.3s, color 0.3s;
+    transition: color 0.3s;
+}
+
+@keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .container {
@@ -77,6 +109,14 @@ header {
 
 .header-content {
     text-align: left;
+    /* Glass card */
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    box-shadow: var(--glass-shadow);
 }
 
 h1 {
@@ -98,13 +138,24 @@ h1 i {
     gap: 1rem;
 }
 
+/* Shared glass surface */
+.editor-container, .paste-viewer,
+.result-container, .modal-content,
+.options-bar, .paste-header,
+.editor-stats, .stat-item,
+.btn-secondary, select, #paste-url {
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+}
+
 .editor-container, .paste-viewer {
-    background: var(--editor-bg);
-    border-radius: 12px;
-    box-shadow: var(--shadow-lg);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--glass-shadow);
     overflow: hidden;
     margin-bottom: 2rem;
-    transition: background-color 0.3s, box-shadow 0.3s;
+    transition: background 0.3s, box-shadow 0.3s;
 }
 
 .options-bar {
@@ -112,8 +163,8 @@ h1 i {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    background: var(--editor-bg);
-    border-bottom: 1px solid var(--border-color);
+    background: var(--glass-bg-strong);
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .left-options, .right-options {
@@ -124,9 +175,9 @@ h1 i {
 
 select {
     padding: 0.5rem 1rem;
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
-    background: var(--editor-bg);
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
     color: var(--text-color);
     cursor: pointer;
     transition: border-color 0.2s;
@@ -138,7 +189,7 @@ select:hover {
 
 .btn-primary, .btn-secondary {
     padding: 0.5rem 1rem;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 0.9rem;
     font-weight: 500;
     display: inline-flex;
@@ -160,9 +211,9 @@ select:hover {
 }
 
 .btn-secondary {
-    background: var(--background-color);
+    background: var(--glass-bg);
     color: var(--text-color);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--glass-border);
 }
 
 .btn-secondary:hover {
@@ -174,21 +225,22 @@ select:hover {
     position: relative;
     display: flex;
     background: var(--editor-bg);
-    border-radius: 8px 8px 0 0;
+    border-radius: 0 0 14px 14px;
     overflow: hidden;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--glass-border);
+    border-top: none;
     border-bottom: none;
 }
 
 .editor-stats {
-    background: var(--editor-bg);
+    background: var(--glass-bg-strong);
     color: var(--text-color);
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--glass-border);
     border-top: none;
-    border-radius: 0 0 8px 8px;
-    opacity: 0.8;
+    border-radius: 0 0 14px 14px;
+    opacity: 0.9;
     text-align: right;
 }
 
@@ -203,8 +255,8 @@ select:hover {
     user-select: none;
     white-space: pre;
     line-height: 1.5;
-    border-right: 1px solid var(--border-color);
-    opacity: 0.8;
+    border-right: 1px solid var(--glass-border);
+    opacity: 0.85;
 }
 
 #code-editor {
@@ -212,7 +264,7 @@ select:hover {
     padding: 1rem;
     background: transparent;
     border: none;
-    color: var(--text-color);
+    color: var(--editor-text);
     font-family: 'Fira Code', monospace;
     font-size: 14px;
     line-height: 1.5;
@@ -225,9 +277,9 @@ select:hover {
 }
 
 .paste-viewer {
-    background: var(--editor-bg);
-    border-radius: 12px;
-    box-shadow: var(--shadow-lg);
+    background: var(--glass-bg);
+    border-radius: 16px;
+    box-shadow: var(--glass-shadow);
     overflow: hidden;
     margin: 2rem auto;
     display: block;
@@ -240,8 +292,8 @@ select:hover {
     justify-content: space-between;
     align-items: center;
     padding: 1.25rem 1.5rem;
-    background: var(--editor-bg);
-    border-bottom: 1px solid var(--border-color);
+    background: var(--glass-bg-strong);
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .paste-info {
@@ -270,22 +322,25 @@ select:hover {
 .language-badge {
     background: var(--primary-color);
     color: white;
-    opacity: 0.9;
+    opacity: 0.95;
 }
 
 .expiry-badge, .views-badge {
     background: var(--secondary-color);
     color: white;
-    opacity: 0.9;
+    opacity: 0.95;
 }
 
 .paste-content-wrapper {
     display: flex;
     background: var(--editor-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
     overflow: auto;
     max-height: calc(100vh - 200px);
     min-height: 300px;
     position: relative;
+    border-radius: 0 0 16px 16px;
 }
 
 .paste-content-wrapper .line-numbers {
@@ -297,7 +352,7 @@ select:hover {
     padding: 1rem;
     min-width: 50px;
     background: var(--line-numbers-bg);
-    border-right: 1px solid var(--border-color);
+    border-right: 1px solid var(--glass-border);
 }
 
 #paste-content {
@@ -310,19 +365,21 @@ select:hover {
     line-height: 1.6;
     color: var(--paste-text);
     overflow-x: auto;
-    background: var(--editor-bg);
+    background: transparent;
     width: 100%;
     min-width: 0;
 }
 
 .result-container {
-    background: var(--editor-bg);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
     padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: var(--shadow-md);
+    border-radius: 16px;
+    box-shadow: var(--glass-shadow);
     display: none;
     margin-top: 1rem;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--glass-border);
 }
 
 .url-display {
@@ -335,11 +392,11 @@ select:hover {
 #paste-url {
     flex-grow: 1;
     padding: 0.75rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
     font-family: 'Fira Code', monospace;
     font-size: 0.9rem;
-    background: var(--background-color);
+    background: var(--glass-bg);
     color: var(--text-color);
     cursor: text;
 }
@@ -355,13 +412,17 @@ select:hover {
     bottom: 2rem;
     right: 2rem;
     padding: 0.75rem 1.5rem;
-    border-radius: 8px;
+    border-radius: 10px;
     color: white;
     font-size: 0.9rem;
     z-index: 1000;
     display: none;
     animation: slideIn 0.3s ease;
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--glass-shadow);
+    background: var(--glass-bg-strong);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
 }
 
 /* Modal styles */
@@ -373,18 +434,21 @@ select:hover {
     width: 100%;
     height: 100%;
     background: var(--modal-bg);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
     z-index: 1000;
 }
 
 .modal-content {
     position: relative;
-    background: var(--editor-bg);
+    background: var(--modal-panel);
     margin: 15% auto;
     padding: 2rem;
     width: 90%;
     max-width: 400px;
-    border-radius: 12px;
-    box-shadow: var(--shadow-lg);
+    border-radius: 16px;
+    box-shadow: var(--glass-shadow);
+    border: 1px solid var(--glass-border);
 }
 
 .close {
@@ -472,7 +536,7 @@ select:hover {
         padding: 1rem 0.5rem;
         min-width: 2.5rem;
         text-align: right;
-        border-right: 1px solid var(--border-color);
+        border-right: 1px solid var(--glass-border);
         border-bottom: none;
         position: sticky;
         left: 0;
@@ -487,7 +551,7 @@ select:hover {
 
     .paste-viewer {
         margin: 1rem auto;
-        border-radius: 8px;
+        border-radius: 14px;
     }
 
     .paste-header {
@@ -579,7 +643,7 @@ select:hover {
         padding: 0.5rem;
         text-align: left;
         border-right: none;
-        border-bottom: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--glass-border);
     }
 
     #paste-content {
@@ -662,8 +726,10 @@ select:hover {
 /* Search Bar */
 .search-bar {
     padding: 1rem 1.5rem;
-    background: var(--editor-bg);
-    border-bottom: 1px solid var(--border-color);
+    background: var(--glass-bg-strong);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .search-inputs {
@@ -675,9 +741,9 @@ select:hover {
 .search-inputs input {
     flex: 1;
     padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background: var(--editor-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    background: var(--glass-bg);
     color: var(--text-color);
     font-family: 'Fira Code', monospace;
 }
@@ -698,7 +764,7 @@ select:hover {
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--glass-border);
 }
 
 .shortcut-item:last-child {
@@ -706,12 +772,13 @@ select:hover {
 }
 
 .shortcut-key {
-    background: var(--background-color);
+    background: var(--glass-bg);
     padding: 0.25rem 0.75rem;
-    border-radius: 4px;
+    border-radius: 6px;
     font-family: 'Fira Code', monospace;
     font-size: 0.9rem;
     color: var(--primary-color);
+    border: 1px solid var(--glass-border);
 }
 
 .shortcut-desc {
@@ -724,8 +791,9 @@ select:hover {
     border-radius: 9999px;
     font-size: 12px;
     font-weight: 500;
-    background: #f3e8fd;
-    color: #7e22ce;
+    background: var(--glass-bg-strong);
+    color: var(--primary-color);
+    border: 1px solid var(--glass-border);
 }
 
 /* Highlight for search results */
@@ -743,7 +811,7 @@ select:hover {
 .views-badge {
     background: var(--secondary-color);
     color: white;
-    opacity: 0.8;
+    opacity: 0.9;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -754,8 +822,10 @@ select:hover {
 }
 
 .stats-panel {
-    background: var(--editor-bg);
-    border-bottom: 1px solid var(--border-color);
+    background: var(--glass-bg-strong);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    border-bottom: 1px solid var(--glass-border);
     padding: 1rem;
     animation: slideDown 0.3s ease;
 }
@@ -771,14 +841,15 @@ select:hover {
 .stat-item {
     text-align: center;
     padding: 1rem;
-    background: var(--background-color);
-    border-radius: 8px;
+    background: var(--glass-bg);
+    border-radius: 14px;
     box-shadow: var(--shadow-sm);
+    border: 1px solid var(--glass-border);
 }
 
 .stat-label {
     font-size: 0.9rem;
-    color: var(--secondary-color);
+    color: var(--stats-color);
     margin-bottom: 0.5rem;
 }
 
