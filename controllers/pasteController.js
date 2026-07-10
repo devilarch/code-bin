@@ -23,16 +23,17 @@ exports.createPaste = async (req, res) => {
   }
 
   try {
-    const { content, expiresAt } = req.body;
+    // Handle both expiresAt (API) and expiresIn (frontend) field names
+    const { content, expiresAt, expiresIn } = req.body;
     const paste = new Paste({ 
       content, 
-      expiresAt
+      expiresAt: expiresAt || expiresIn
     });
     await paste.save();
 
     res.status(201).json({
       slug: paste.slug,
-      url: `${req.protocol}://${req.get('host')}/api/pastes/${paste.slug}`
+      url: `${req.protocol}://${req.get('host')}/#/paste/${paste.slug}`
     });
   } catch (error) {
     console.error('Error creating paste:', error);

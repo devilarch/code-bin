@@ -46,8 +46,8 @@ function updateLineNumbers(element) {
 
 // Get base API URL based on environment
 const getApiBaseUrl = () => {
-    // Use versioned API path - matches server-side routing
-    return '/api/v1';
+    // Use /api (no versioning) to match actual server routes
+    return '/api';
 };
 
 // Create paste
@@ -329,6 +329,12 @@ window.addEventListener('click', (e) => {
     }
 });
 
+// Proper modal close handlers
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) modal.style.display = 'none';
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     initializeRouting();
@@ -353,24 +359,17 @@ document.addEventListener('DOMContentLoaded', () => {
         shortcutsButton.addEventListener('click', toggleShortcutsModal);
     }
     
-    // Fix: Attach close button handlers for shortcuts modal
-    const closeButtons = document.querySelectorAll('#shortcuts-modal .close');
-    closeButtons.forEach(closeBtn => {
+    // Fix: Handle all close buttons (both shortcuts and QR modals)
+    document.querySelectorAll('.modal .close').forEach(closeBtn => {
         closeBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            const modal = document.getElementById('shortcuts-modal');
+            const modal = closeBtn.closest('.modal');
             if (modal) modal.style.display = 'none';
         });
     });
     
-    // Also fix: Open Paste button in result container
-    const openPasteButton = document.querySelector('.share-options .btn-secondary');
-    if (openPasteButton) {
-        openPasteButton.addEventListener('click', () => {
-            const url = document.getElementById('paste-url').value;
-            if (url) window.open(url, '_blank');
-        });
-    }
+    // Remove conflicting inline onclick from QR modal to prevent errors
+    // (generateQR function no longer exists)
 });
 
 window.addEventListener('hashchange', initializeRouting);
