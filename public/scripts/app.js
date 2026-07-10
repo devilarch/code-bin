@@ -46,8 +46,8 @@ function updateLineNumbers(element) {
 
 // Get base API URL based on environment
 const getApiBaseUrl = () => {
-    // Use relative path - this will work in both dev and prod
-    return '/api';
+    // Use versioned API path - matches server-side routing
+    return '/api/v1';
 };
 
 // Create paste
@@ -80,7 +80,7 @@ async function createPaste() {
         if (!data.slug) throw new Error('No paste ID received');
         
         const pasteId = data.slug;
-        const fullUrl = `${window.location.origin}/#/paste/${pasteId}`;
+        const fullUrl = `${window.location.origin}${window.location.pathname}#/paste/${pasteId}`;
         
         // Update URL display and show result container
         pasteUrl.value = fullUrl;
@@ -351,6 +351,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (shortcutsButton) {
         shortcutsButton.addEventListener('click', toggleShortcutsModal);
+    }
+    
+    // Fix: Attach close button handlers for shortcuts modal
+    const closeButtons = document.querySelectorAll('#shortcuts-modal .close');
+    closeButtons.forEach(closeBtn => {
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const modal = document.getElementById('shortcuts-modal');
+            if (modal) modal.style.display = 'none';
+        });
+    });
+    
+    // Also fix: Open Paste button in result container
+    const openPasteButton = document.querySelector('.share-options .btn-secondary');
+    if (openPasteButton) {
+        openPasteButton.addEventListener('click', () => {
+            const url = document.getElementById('paste-url').value;
+            if (url) window.open(url, '_blank');
+        });
     }
 });
 
