@@ -63,7 +63,7 @@ body {
 #prompt {
     color: var(--muted);
     position: absolute;
-    top: calc(20px + var(--footer-h));
+    top: 20px;
     left: 0;
     width: 30px;
     font-size: 1rem;
@@ -72,6 +72,7 @@ body {
     text-align: right;
     z-index: 10;
     pointer-events: none;
+    display: none; /* Hide absolute prompt in flow */
 }
 
 /* ------------------------------------- */
@@ -91,9 +92,9 @@ textarea#code-editor {
     background: transparent;
     border: none;
     color: var(--fg);
-    padding: calc(20px + var(--footer-h)) 20px 20px 40px;
+    padding: 20px 20px 20px 20px;
     width: 100%;
-    height: 100%;
+    flex: 1;
     font-family: inherit;
     outline: none;
     resize: none;
@@ -110,7 +111,7 @@ textarea#code-editor::placeholder {
 
 .paste-content-wrapper {
     width: 100%;
-    height: 100%;
+    flex: 1;
     overflow: auto;
     position: relative;
 }
@@ -119,13 +120,14 @@ textarea#code-editor::placeholder {
     background: transparent !important;
     border: none !important;
     margin: 0 !important;
-    padding: calc(20px + var(--footer-h)) 20px 20px 40px !important;
+    padding: 20px 20px 20px 20px !important;
     font-family: 'Fira Code', monospace !important;
     font-size: 1rem !important;
     line-height: 1.5 !important;
     color: var(--fg) !important;
     display: block;
     width: 100%;
+    min-height: 100%;
 }
 
 .paste-content-wrapper code, #paste-content {
@@ -139,18 +141,15 @@ textarea#code-editor::placeholder {
 /* ------------------------------------- */
 
 .foot-spacer {
-    display: none; /* No longer needed with padding method */
+    display: none;
 }
 
 .foot-minibuf {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
     width: 100%;
     background-color: var(--panel);
     user-select: none;
     z-index: 100;
+    flex: 0 0 auto;
 }
 
 .foot {
@@ -378,13 +377,5 @@ pre[class*="language-"] {
         width: 100%;
         justify-content: flex-start;
         flex-wrap: wrap;
-    }
-
-    textarea#code-editor, .paste-content-wrapper, .paste-content-wrapper pre {
-        padding-left: 20px !important;
-    }
-
-    #prompt {
-        display: none;
     }
 }

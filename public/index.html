@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     
     <!-- Critical CSS -->
-    <link rel="stylesheet" href="/styles/main.css?v=11">
+    <link rel="stylesheet" href="/styles/main.css?v=12">
     
     <!-- Load fonts after page load -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
@@ -25,9 +25,7 @@
     <div id="prompt">&gt;</div>
     
     <!-- EDITOR -->
-    <div class="editor-container" style="display: flex;">
-        <textarea id="code-editor" spellcheck="false" autofocus placeholder="Paste your code here..."></textarea>
-        <span class="foot-spacer"></span>
+    <div class="editor-container" style="display: flex; flex-direction: column;">
         <footer class="foot-minibuf">
             <div class="foot">
                 <span class="foot-title title-accent"><i class="fas fa-terminal"></i> codebin</span>
@@ -70,14 +68,11 @@
                 </span>
             </div>
         </footer>
+        <textarea id="code-editor" spellcheck="false" autofocus placeholder="Paste your code here..."></textarea>
     </div>
 
     <!-- VIEWER -->
-    <div id="paste-viewer" class="paste-viewer" style="display: none;">
-        <div class="paste-content-wrapper">
-            <pre><code id="paste-content" class="language-plaintext"></code></pre>
-        </div>
-        <span class="foot-spacer"></span>
+    <div id="paste-viewer" class="paste-viewer" style="display: none; flex-direction: column;">
         <footer class="foot-minibuf">
             <div id="stats-panel" class="stats-panel" style="display: none;">
                 Total Views: <span id="total-views">0</span> | Created: <span id="created-at">-</span>
@@ -95,6 +90,9 @@
                 </span>
             </div>
         </footer>
+        <div class="paste-content-wrapper">
+            <pre><code id="paste-content" class="language-plaintext"></code></pre>
+        </div>
     </div>
 
     <!-- RESULT MODAL -->
