@@ -268,6 +268,12 @@ function initializeRouting() {
 
     if (hash.startsWith('#/paste/')) {
         const pasteId = hash.split('/')[2];
+        
+        // Immediately hide editor to prevent flashing while loading
+        if (document.querySelector('.editor-container')) {
+            document.querySelector('.editor-container').style.display = 'none';
+        }
+        
         if (pasteId) {
             loadPaste(pasteId);
         } else {
