@@ -335,14 +335,14 @@ select:hover {
     display: block;
     flex: 1;
     background: var(--editor-bg);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
     overflow: auto;
     max-height: none;
     min-height: 0;
     position: relative;
     border-radius: 0;
     border-top: 1px solid var(--glass-border);
+    z-index: 1;
+    -webkit-text-size-adjust: 100%;
 }
 
 .paste-content-wrapper .line-numbers {
@@ -946,4 +946,25 @@ select:hover {
     to {
         transform: rotate(360deg);
     }
+}
+
+/* Fix mobile rendering for paste viewer */
+.paste-content-wrapper pre {
+    margin: 0 !important;
+    padding: 1rem 1.5rem !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    position: relative;
+    z-index: 2;
+    color: var(--editor-text) !important;
+}
+
+.paste-content-wrapper code, #paste-content {
+    color: var(--editor-text) !important;
+    text-shadow: none !important;
+    position: relative;
+    z-index: 3;
 }
