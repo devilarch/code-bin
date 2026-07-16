@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const connectDB = require('./config/db');
 const pasteRoutes = require('./routes/pasteRoutes');
+const telegramRoutes = require('./routes/telegramRoutes');
 const path = require("path");
 
 const app = express();
@@ -43,6 +44,7 @@ connectDB();
 
 // Routes
 app.use('/api', pasteRoutes);
+app.use('/api', telegramRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
