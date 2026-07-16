@@ -34,6 +34,10 @@ const pasteSchema = new mongoose.Schema({
     type: Date,
     default: null,
     expires: 0
+  },
+  burnAfterReading: {
+    type: Boolean,
+    default: false
   }
 });
 

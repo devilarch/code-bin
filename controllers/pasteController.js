@@ -45,16 +45,23 @@ exports.createPaste = async (req, res) => {
     
     // Determine the expiration date (API priority to expiresAt, Frontend priority to expiresIn)
     let finalExpiresAt = null;
+    let burnAfterReading = false;
+    
     if (expiresAt) {
       finalExpiresAt = expiresAt;
     } else if (expiresIn) {
-      finalExpiresAt = parseDurationToDate(expiresIn);
+      if (expiresIn === 'burn') {
+        burnAfterReading = true;
+      } else {
+        finalExpiresAt = parseDurationToDate(expiresIn);
+      }
     }
 
     const paste = new Paste({ 
       content,
       language: language || 'plaintext',
-      expiresAt: finalExpiresAt
+      expiresAt: finalExpiresAt,
+      burnAfterReading
     });
     await paste.save();
 
@@ -78,14 +85,20 @@ exports.getPaste = async (req, res) => {
       return errorResponse(res, 410, 'Paste has expired');
     }
 
-    // Use model method to check and add viewer
-    const isNewView = paste.addViewerIp(req.clientIp);
-    await paste.save();
+    let isNewView = true;
+    if (paste.burnAfterReading) {
+      await paste.deleteOne();
+    } else {
+      // Use model method to check and add viewer
+      isNewView = paste.addViewerIp(req.clientIp);
+      await paste.save();
+    }
 
     // Return paste with view info but without exposing IPs
     const response = paste.toObject();
     delete response.viewerIps; // Don't expose viewer IPs
     response.isNewView = isNewView;
+    response.isBurned = paste.burnAfterReading;
     
     res.json(response);
   } catch (error) {

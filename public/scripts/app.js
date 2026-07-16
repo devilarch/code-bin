@@ -201,9 +201,14 @@ async function loadPaste(pasteId) {
         Prism.highlightElement(pasteContent);
         
         // Update expiry info
-        viewerExpiry.textContent = data.expiresAt ? 
-            new Date(data.expiresAt).toLocaleString() : 
-            'never';
+        if (data.isBurned) {
+            viewerExpiry.textContent = 'burned';
+            showNotification('This paste was burned and will never be seen again!', 'success');
+        } else {
+            viewerExpiry.textContent = data.expiresAt ? 
+                new Date(data.expiresAt).toLocaleString() : 
+                'never';
+        }
             
         // Update view count
         viewerViews.textContent = data.views || 0;
@@ -429,6 +434,60 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Remove conflicting inline onclick from QR modal to prevent errors
     // (generateQR function no longer exists)
+    // Drag and Drop File Upload
+    const editorContainer = document.querySelector('.editor-container');
+    if (editorContainer) {
+        editorContainer.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            editorContainer.classList.add('drag-active');
+        });
+        editorContainer.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            editorContainer.classList.remove('drag-active');
+        });
+        editorContainer.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            editorContainer.classList.remove('drag-active');
+            
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = (event) => {
+                    codeEditor.value = event.target.result;
+                    updateStats();
+                    updateLineNumbers(codeEditor);
+                    
+                    // Auto-detect language from extension
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    const langMap = {
+                        'js': 'javascript', 'ts': 'javascript',
+                        'py': 'python', 'html': 'html',
+                        'css': 'css', 'cpp': 'cpp', 'c': 'cpp', 'h': 'cpp',
+                        'java': 'java', 'cs': 'csharp', 'php': 'php',
+                        'rb': 'ruby', 'go': 'go', 'rs': 'rust',
+                        'swift': 'swift', 'kt': 'kotlin', 'txt': 'plaintext'
+                    };
+                    const langSelect = document.getElementById('language');
+                    if (langMap[ext] && langSelect) {
+                        langSelect.value = langMap[ext];
+                    } else if (langSelect) {
+                        langSelect.value = 'auto'; // Fallback
+                    }
+                    showNotification(`Loaded ${file.name}`, 'success');
+                };
+                
+                reader.onerror = () => {
+                    showNotification('Failed to read file', 'error');
+                };
+                
+                reader.readAsText(file);
+            }
+        });
+    }
 });
 
 window.addEventListener('hashchange', initializeRouting);
