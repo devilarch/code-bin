@@ -29,7 +29,7 @@ app.use(helmet({
 }));
 app.use(cors());
 app.use(compression());
-app.use(express.json({ limit: '10kb' }));
+app.use(express.json({ limit: '2mb' }));
 
 // Add cache control for static assets
 const cacheTime = 86400000 * 30; // 30 days
