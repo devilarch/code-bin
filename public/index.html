@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     
     <!-- Critical CSS -->
-    <link rel="stylesheet" href="/styles/main.css?v=14">
+    <link rel="stylesheet" href="/styles/main.css?v=15">
     
     <!-- Load fonts after page load -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
@@ -72,6 +72,9 @@
     </div>
 
     <!-- VIEWER -->
+    <div id="loader" style="display: none; padding: calc(20px + var(--footer-h)) 20px 20px 40px; color: var(--accent); font-family: 'Fira Code', monospace;">
+        Fetching paste data<span class="blink">...</span>
+    </div>
     <div id="paste-viewer" class="paste-viewer" style="display: none; flex-direction: column;">
         <footer class="foot-minibuf">
             <div id="stats-panel" class="stats-panel" style="display: none;">

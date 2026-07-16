@@ -224,6 +224,9 @@ async function loadPaste(pasteId) {
         // Update page title
         document.title = `CodeBin - ${pasteId}`;
     } catch (error) {
+        const loader = document.getElementById('loader');
+        if (loader) loader.style.display = 'none';
+        
         showNotification(error.message, 'error');
         console.error('Error:', error);
         // Redirect to home page after error
