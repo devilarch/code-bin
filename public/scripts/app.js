@@ -378,12 +378,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Fix: Handle all close buttons (both shortcuts and QR modals)
-    document.querySelectorAll('.modal .close').forEach(closeBtn => {
+    // Fix: Handle all close buttons (both shortcuts, QR modals, and result container)
+    document.querySelectorAll('.modal .close, #close-result').forEach(closeBtn => {
         closeBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             const modal = closeBtn.closest('.modal');
             if (modal) modal.style.display = 'none';
+            const resultBox = closeBtn.closest('.result-container');
+            if (resultBox) resultBox.classList.remove('show');
         });
     });
     
