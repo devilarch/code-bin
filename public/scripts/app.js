@@ -28,7 +28,7 @@ function updateStats() {
     const lines = content.split('\n').length;
     
     document.getElementById('stats').textContent = 
-        `${chars} characters | ${words} words | ${lines} lines`;
+        `L:${lines} W:${words} C:${chars}`;
 }
 
 // Line numbers functionality
@@ -122,7 +122,7 @@ async function copyToClipboard() {
 // Toggle stats panel
 function toggleStats() {
     const isHidden = statsPanel.style.display === 'none';
-    statsPanel.style.display = isHidden ? 'block' : 'none';
+    statsPanel.style.display = isHidden ? 'flex' : 'none';
     
     // If showing stats panel, fetch latest statistics
     if (isHidden) {
@@ -202,11 +202,11 @@ async function loadPaste(pasteId) {
         
         // Update expiry info
         viewerExpiry.textContent = data.expiresAt ? 
-            `Expires: ${new Date(data.expiresAt).toLocaleString()}` : 
-            'Never expires';
+            new Date(data.expiresAt).toLocaleString() : 
+            'never';
             
         // Update view count
-        viewerViews.innerHTML = `<i class="fas fa-eye"></i> ${data.views || 0} views`;
+        viewerViews.textContent = data.views || 0;
         
         // If it's a new view, fetch updated statistics
         if (data.isNewView) {

@@ -3,184 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="CodeBin - A modern pastebin for your code snippets">
-    <title>CodeBin - Modern Pastebin</title>
+    <meta name="description" content="CodeBin - Minimalist pastebin for your code snippets">
+    <title>CodeBin - Minimalist Pastebin</title>
     
     <!-- Preload critical fonts -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" as="style">
     
     <!-- Async load non-critical CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- We rely entirely on our own CSS for Prism now, or load a dark theme -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
     
     <!-- Critical CSS -->
-    <link rel="stylesheet" href="/styles/main.css?v=9">
+    <link rel="stylesheet" href="/styles/main.css?v=10">
     
     <!-- Load fonts after page load -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap">
-    
-    <!-- Preconnect to external domains -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
 </head>
-<body>
-    <div class="container">
-        <header>
-            <div class="header-content">
-                <h1><i class="fas fa-code"></i> CodeBin</h1>
-                <p>A modern pastebin for your code snippets</p>
+<body class="app-body">
+    <div id="prompt">&gt;</div>
+    
+    <!-- EDITOR -->
+    <div class="editor-container" style="display: flex;">
+        <textarea id="code-editor" spellcheck="false" autofocus placeholder="Paste your code here..."></textarea>
+        <span class="foot-spacer"></span>
+        <footer class="foot-minibuf">
+            <div class="foot">
+                <span class="foot-title title-accent"><i class="fas fa-terminal"></i> codebin</span>
+                <span class="foot-item">
+                    <select id="language" class="terminal-select">
+                        <option value="auto">auto-detect</option>
+                        <option value="plaintext">txt</option>
+                        <option value="javascript">js</option>
+                        <option value="python">py</option>
+                        <option value="html">html</option>
+                        <option value="css">css</option>
+                        <option value="cpp">cpp</option>
+                        <option value="java">java</option>
+                        <option value="csharp">c#</option>
+                        <option value="php">php</option>
+                        <option value="ruby">ruby</option>
+                        <option value="go">go</option>
+                        <option value="rust">rust</option>
+                        <option value="swift">swift</option>
+                        <option value="kotlin">kotlin</option>
+                    </select>
+                </span>
+                <span class="foot-item">
+                    <select id="expiration" class="terminal-select">
+                        <option value="never">never</option>
+                        <option value="10m">10m</option>
+                        <option value="1h">1h</option>
+                        <option value="1d">1d</option>
+                        <option value="1w">1w</option>
+                        <option value="1m">1m</option>
+                    </select>
+                </span>
+                
+                <span class="foot-end">
+                    <span id="stats" class="foot-stats"></span>
+                    <button id="clear-editor" class="link-reset foot-btn">[clear]</button>
+                    <button id="create-paste" class="link-reset foot-btn title-accent">[save]</button>
+                    <button id="toggle-theme" class="link-reset foot-btn">[theme]</button>
+                    <button id="show-shortcuts" class="link-reset foot-btn">[keys]</button>
+                </span>
             </div>
-            <div class="header-actions">
-                <button id="toggle-theme" class="btn-secondary">
-                    <i class="fas fa-moon"></i> Toggle Theme
-                </button>
-                <button id="show-shortcuts" class="btn-secondary">
-                    <i class="fas fa-keyboard"></i> Shortcuts
-                </button>
-            </div>
-        </header>
+        </footer>
+    </div>
 
-        <div class="editor-container">
-            <div class="options-bar">
-                <div class="left-options">
-                    <select id="language">
-                        <option value="auto">Auto-Detect</option>
-                        <option value="plaintext">Plain Text</option>
-                        <option value="javascript">JavaScript</option>
-                        <option value="python">Python</option>
-                        <option value="html">HTML</option>
-                        <option value="css">CSS</option>
-                        <option value="cpp">C++</option>
-                        <option value="java">Java</option>
-                        <option value="csharp">C#</option>
-                        <option value="php">PHP</option>
-                        <option value="ruby">Ruby</option>
-                        <option value="go">Go</option>
-                        <option value="rust">Rust</option>
-                        <option value="swift">Swift</option>
-                        <option value="kotlin">Kotlin</option>
-                    </select>
-                    <select id="expiration">
-                        <option value="never">Never expire</option>
-                        <option value="10m">10 minutes</option>
-                        <option value="1h">1 hour</option>
-                        <option value="1d">1 day</option>
-                        <option value="1w">1 week</option>
-                        <option value="1m">1 month</option>
-                    </select>
-                </div>
-                <div class="right-options">
-                    <button id="clear-editor" class="btn-secondary">
-                        <i class="fas fa-trash"></i> Clear
-                    </button>
-                    <button id="create-paste" class="btn-primary">
-                        <i class="fas fa-save"></i> Create Paste
-                    </button>
-                </div>
-            </div>
-            <div class="editor-wrapper">
-                <div class="line-numbers"></div>
-                <textarea id="code-editor" spellcheck="false" placeholder="Enter your code here..."></textarea>
-            </div>
-            <div id="stats" class="editor-stats"></div>
+    <!-- VIEWER -->
+    <div id="paste-viewer" class="paste-viewer" style="display: none;">
+        <div class="paste-content-wrapper">
+            <pre><code id="paste-content" class="language-plaintext"></code></pre>
         </div>
-
-        <div id="paste-viewer" class="paste-viewer" style="display: none;">
-            <div class="paste-header">
-                <div class="paste-info">
-                    <span id="viewer-language" class="badge language-badge">plaintext</span>
-                    <span id="viewer-expiry" class="badge expiry-badge">Never expires</span>
-                    <span id="viewer-views" class="badge views-badge">
-                        <i class="fas fa-eye"></i> 0 views
-                    </span>
-                </div>
-                <div class="paste-actions">
-                    <button id="copy-button" class="btn-secondary">
-                        <i class="fas fa-copy"></i> Copy
-                    </button>
-                    <button id="stats-button" class="btn-secondary">
-                        <i class="fas fa-chart-bar"></i> Stats
-                    </button>
-                    <button id="new-paste" class="btn-primary">
-                        <i class="fas fa-plus"></i> New Paste
-                    </button>
-                </div>
-            </div>
+        <span class="foot-spacer"></span>
+        <footer class="foot-minibuf">
             <div id="stats-panel" class="stats-panel" style="display: none;">
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-label">Total Views</div>
-                        <div id="total-views" class="stat-value">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Created</div>
-                        <div id="created-at" class="stat-value">-</div>
-                    </div>
-                </div>
+                Total Views: <span id="total-views">0</span> | Created: <span id="created-at">-</span>
             </div>
-            <div class="paste-content-wrapper">
-                <div class="line-numbers"></div>
-                <pre id="paste-content" class="language-plaintext"></pre>
+            <div class="foot">
+                <span class="foot-title title-accent"><i class="fas fa-terminal"></i> codebin</span>
+                <span class="foot-item">lang:<span id="viewer-language">txt</span></span>
+                <span class="foot-item">exp:<span id="viewer-expiry">never</span></span>
+                <span class="foot-item" id="viewer-views">0</span>
+                
+                <span class="foot-end">
+                    <button id="copy-button" class="link-reset foot-btn">[copy]</button>
+                    <button id="stats-button" class="link-reset foot-btn">[stats]</button>
+                    <button id="new-paste" class="link-reset foot-btn title-accent">[new]</button>
+                </span>
             </div>
-        </div>
+        </footer>
+    </div>
 
-        <div class="result-container" id="result">
-            <span class="close" id="close-result">&times;</span>
+    <!-- RESULT MODAL -->
+    <div class="result-container" id="result">
+        <span class="close" id="close-result">&times;</span>
+        <div class="result-content">
+            <div class="result-title">Paste created!</div>
             <div class="url-display">
-                <input type="text" id="paste-url" readonly>
-                <button class="btn-primary">
-                    <i class="fas fa-copy"></i> Copy URL
-                </button>
+                <input type="text" id="paste-url" readonly class="terminal-input">
+                <button class="btn-primary link-reset foot-btn">[copy_url]</button>
+                <button id="open-paste-btn" class="link-reset foot-btn">[open]</button>
             </div>
-            <div class="share-options">
-                <button id="open-paste-btn" class="btn-secondary">
-                    <i class="fas fa-external-link-alt"></i> Open Paste
-                </button>
-
-            </div>
-        </div>
-
-        <div class="notification" id="notification"></div>
-    </div>
-
-    <!-- QR Code Modal -->
-    <div id="qr-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Scan to Share</h2>
-            <div id="qr-code"></div>
         </div>
     </div>
 
-    <!-- Keyboard Shortcuts Modal -->
+    <!-- KEYBOARD SHORTCUTS MODAL -->
     <div id="shortcuts-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Keyboard Shortcuts</h2>
+            <div class="modal-title">Shortcuts</div>
             <div class="shortcuts-list">
-                <div class="shortcut-item">
-                    <span class="shortcut-desc">Save paste</span>
-                    <span class="shortcut-key">Ctrl/Cmd + S</span>
-                </div>
-                <div class="shortcut-item">
-                    <span class="shortcut-desc">Toggle dark mode</span>
-                    <span class="shortcut-key">Ctrl/Cmd + D</span>
-                </div>
-                <div class="shortcut-item">
-                    <span class="shortcut-desc">Clear editor</span>
-                    <span class="shortcut-key">Ctrl/Cmd + L</span>
-                </div>
-                <div class="shortcut-item">
-                    <span class="shortcut-desc">Show shortcuts</span>
-                    <span class="shortcut-key">Ctrl/Cmd + K</span>
-                </div>
+                <div><span>[Ctrl+S]</span> save paste</div>
+                <div><span>[Ctrl+D]</span> toggle theme</div>
+                <div><span>[Ctrl+L]</span> clear editor</div>
+                <div><span>[Ctrl+K]</span> shortcuts</div>
             </div>
         </div>
     </div>
 
-    <!-- Notification -->
     <div id="notification" class="notification"></div>
 
     <!-- Load highlight.js strictly for language auto-detection -->
@@ -189,9 +132,8 @@
     <!-- Load non-critical scripts asynchronously -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
     
     <!-- Load our app script last -->
-    <script defer src="/scripts/app.js?v=7"></script>
+    <script defer src="/scripts/app.js?v=8"></script>
 </body>
 </html>
