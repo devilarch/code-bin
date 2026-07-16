@@ -500,10 +500,6 @@ select:hover {
 }
 
 @media (max-width: 768px) {
-    body {
-        padding: 1rem;
-    }
-
     header {
         flex-direction: column;
         align-items: flex-start;
@@ -571,10 +567,6 @@ select:hover {
         padding: 1rem;
     }
 
-    .paste-viewer {
-        margin: 1rem auto;
-        border-radius: 14px;
-    }
 
     .paste-header {
         padding: 1rem;
@@ -591,10 +583,6 @@ select:hover {
         justify-content: flex-start;
     }
 
-    .paste-content-wrapper {
-        min-height: 200px;
-        max-height: calc(100vh - 150px);
-    }
 
     .paste-content-wrapper .line-numbers {
         padding: 0.75rem;
@@ -655,18 +643,6 @@ select:hover {
         padding: 0.75rem;
     }
 
-    .paste-content-wrapper {
-        flex-direction: column;
-    }
-
-    .paste-content-wrapper .line-numbers {
-        position: relative;
-        width: 100%;
-        padding: 0.5rem;
-        text-align: left;
-        border-right: none;
-        border-bottom: 1px solid var(--glass-border);
-    }
 
     #paste-content {
         width: 100%;
@@ -692,10 +668,6 @@ select:hover {
 }
 
 @media (max-width: 480px) {
-    body {
-        padding: 0.5rem;
-    }
-
     h1 {
         font-size: 1.75rem;
     }
