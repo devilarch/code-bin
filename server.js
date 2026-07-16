@@ -53,7 +53,7 @@ app.use((err, req, res, next) => {
 // Handle all routes for SPA
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"), {
-    maxAge: '1h',
+    maxAge: 0,
     etag: true,
     lastModified: true
   });
