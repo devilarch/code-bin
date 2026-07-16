@@ -63,7 +63,7 @@ body {
 #prompt {
     color: var(--muted);
     position: absolute;
-    top: 20px;
+    top: calc(20px + var(--footer-h));
     left: 0;
     width: 30px;
     font-size: 1rem;
@@ -91,10 +91,9 @@ textarea#code-editor {
     background: transparent;
     border: none;
     color: var(--fg);
-    padding: 20px 20px 20px 40px;
+    padding: calc(20px + var(--footer-h)) 20px 20px 40px;
     width: 100%;
-    height: calc(100vh - var(--footer-h));
-    height: calc(100dvh - var(--footer-h));
+    height: 100%;
     font-family: inherit;
     outline: none;
     resize: none;
@@ -111,8 +110,7 @@ textarea#code-editor::placeholder {
 
 .paste-content-wrapper {
     width: 100%;
-    height: calc(100vh - var(--footer-h));
-    height: calc(100dvh - var(--footer-h));
+    height: 100%;
     overflow: auto;
     position: relative;
 }
@@ -121,7 +119,7 @@ textarea#code-editor::placeholder {
     background: transparent !important;
     border: none !important;
     margin: 0 !important;
-    padding: 20px 20px 20px 40px !important;
+    padding: calc(20px + var(--footer-h)) 20px 20px 40px !important;
     font-family: 'Fira Code', monospace !important;
     font-size: 1rem !important;
     line-height: 1.5 !important;
@@ -141,13 +139,12 @@ textarea#code-editor::placeholder {
 /* ------------------------------------- */
 
 .foot-spacer {
-    height: var(--footer-h);
-    display: block;
+    display: none; /* No longer needed with padding method */
 }
 
 .foot-minibuf {
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
     right: 0;
     width: 100%;
@@ -159,7 +156,7 @@ textarea#code-editor::placeholder {
 .foot {
     height: var(--footer-h);
     background: linear-gradient(90deg, var(--panel-2), var(--panel));
-    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     border-left: 6px solid var(--accent);
     display: flex;
     flex-direction: row;
@@ -232,7 +229,7 @@ textarea#code-editor::placeholder {
 
 .stats-panel {
     background: var(--panel-2);
-    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     border-left: 6px solid var(--accent);
     padding: 4px 16px;
     font-size: 0.9em;
@@ -297,12 +294,14 @@ textarea#code-editor::placeholder {
 
 .url-display {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin-top: 16px;
 }
 
 .terminal-input {
-    flex: 1;
+    flex: 1 1 200px;
+    min-width: 0;
     background: var(--panel);
     border: 1px solid var(--border);
     color: var(--fg);
