@@ -46,6 +46,7 @@
             <div class="options-bar">
                 <div class="left-options">
                     <select id="language">
+                        <option value="auto">Auto-Detect</option>
                         <option value="plaintext">Plain Text</option>
                         <option value="javascript">JavaScript</option>
                         <option value="python">Python</option>
@@ -182,12 +183,15 @@
     <!-- Notification -->
     <div id="notification" class="notification"></div>
 
+    <!-- Load highlight.js strictly for language auto-detection -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
     <!-- Load non-critical scripts asynchronously -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
     
     <!-- Load our app script last -->
-    <script defer src="/scripts/app.js?v=5"></script>
+    <script defer src="/scripts/app.js?v=7"></script>
 </body>
 </html>

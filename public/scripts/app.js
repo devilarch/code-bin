@@ -155,6 +155,24 @@ async function fetchPasteStats(pasteId) {
     }
 }
 
+// Map highlight.js output to Prism.js classes
+const languageMap = {
+    'cpp': 'cpp', 'c': 'cpp', 'c++': 'cpp',
+    'javascript': 'javascript', 'js': 'javascript',
+    'python': 'python', 'py': 'python',
+    'html': 'html', 'xml': 'html',
+    'css': 'css',
+    'java': 'java',
+    'csharp': 'csharp', 'cs': 'csharp',
+    'php': 'php',
+    'ruby': 'ruby', 'rb': 'ruby',
+    'go': 'go', 'golang': 'go',
+    'rust': 'rust', 'rs': 'rust',
+    'swift': 'swift',
+    'kotlin': 'kotlin', 'kt': 'kotlin',
+    'bash': 'bash', 'shell': 'bash'
+};
+
 // Load paste
 async function loadPaste(pasteId) {
     try {
@@ -165,11 +183,22 @@ async function loadPaste(pasteId) {
         
         // Update viewer
         pasteContent.textContent = data.content;
-        if (data.language) {
-            pasteContent.className = `language-${data.language}`;
-            viewerLanguage.textContent = data.language;
-            Prism.highlightElement(pasteContent);
+        let displayLanguage = data.language || 'plaintext';
+        
+        // Auto-detect if set to 'auto'
+        if (displayLanguage === 'auto' && window.hljs) {
+            try {
+                const detected = hljs.highlightAuto(data.content).language;
+                displayLanguage = languageMap[detected] || 'plaintext';
+            } catch (e) {
+                console.warn('Auto-detect failed', e);
+                displayLanguage = 'plaintext';
+            }
         }
+        
+        pasteContent.className = `language-${displayLanguage}`;
+        viewerLanguage.textContent = displayLanguage === 'plaintext' ? 'Plain Text' : displayLanguage;
+        Prism.highlightElement(pasteContent);
         
         // Update expiry info
         viewerExpiry.textContent = data.expiresAt ? 
