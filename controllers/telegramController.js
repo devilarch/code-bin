@@ -20,12 +20,11 @@ async function sendMessage(chatId, text) {
 }
 
 exports.webhook = async (req, res) => {
-    // Acknowledge the webhook immediately so Telegram doesn't retry
-    res.status(200).send('OK');
-
     try {
         const update = req.body;
-        if (!update || !update.message) return;
+        if (!update || !update.message) {
+            return res.status(200).send('OK');
+        }
 
         const message = update.message;
         const text = message.text || '';
@@ -35,14 +34,14 @@ exports.webhook = async (req, res) => {
             // Must be a reply
             if (!message.reply_to_message) {
                 await sendMessage(message.chat.id, "Please reply to a message with /paste to create a snippet.");
-                return;
+                return res.status(200).send('OK');
             }
 
             const codeToPaste = message.reply_to_message.text || message.reply_to_message.caption;
             
             if (!codeToPaste) {
                 await sendMessage(message.chat.id, "The replied message doesn't contain any text.");
-                return;
+                return res.status(200).send('OK');
             }
 
             // Create the paste (using "auto" language)
@@ -59,6 +58,9 @@ exports.webhook = async (req, res) => {
     } catch (error) {
         console.error('Telegram webhook error:', error);
     }
+    
+    // Always acknowledge at the end so Vercel doesn't kill the function prematurely
+    res.status(200).send('OK');
 };
 
 exports.setup = async (req, res) => {
