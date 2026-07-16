@@ -38,10 +38,7 @@ exports.deletePasteLimiter = createLimiter({
 
 // Middleware to get real IP address
 exports.getClientIp = (req, res, next) => {
-  // Get IP from various headers and fallback to connection remote address
-  req.clientIp = 
-    req.headers['x-forwarded-for']?.split(',')[0] || 
-    req.headers['x-real-ip'] || 
-    req.connection.remoteAddress;
+  // Express handles proxy headers securely via app.set('trust proxy', 1)
+  req.clientIp = req.ip;
   next();
 };

@@ -7,6 +7,10 @@ const pasteSchema = new mongoose.Schema({
     unique: true,
     default: () => nanoid(10)
   },
+  language: {
+    type: String,
+    default: 'plaintext'
+  },
   content: {
     type: String,
     required: true
@@ -28,12 +32,10 @@ const pasteSchema = new mongoose.Schema({
   },
   expiresAt: {
     type: Date,
-    default: null
+    default: null,
+    expires: 0
   }
 });
-
-// Index for faster lookups
-pasteSchema.index({ slug: 1 });
 
 // Method to check if IP has viewed this paste
 pasteSchema.methods.hasViewedFromIp = function(ip) {

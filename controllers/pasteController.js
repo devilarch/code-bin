@@ -4,6 +4,18 @@ const Paste = require('../models/Paste');
 // Standard error response helper
 const errorResponse = (res, status, message) => res.status(status).json({ error: message });
 
+// Helper to parse duration string (e.g., '10m', '1d') into a future Date
+const parseDurationToDate = (durationStr) => {
+  if (!durationStr || durationStr === 'never') return null;
+  const now = new Date();
+  if (durationStr === '10m') return new Date(now.getTime() + 10 * 60000);
+  if (durationStr === '1h') return new Date(now.getTime() + 60 * 60000);
+  if (durationStr === '1d') return new Date(now.getTime() + 24 * 60 * 60000);
+  if (durationStr === '1w') return new Date(now.getTime() + 7 * 24 * 60 * 60000);
+  if (durationStr === '1m') return new Date(now.setMonth(now.getMonth() + 1));
+  return null;
+};
+
 // Validation rules
 exports.validatePaste = [
   body('content')
@@ -12,7 +24,13 @@ exports.validatePaste = [
   body('expiresAt')
     .optional()
     .isISO8601().withMessage('Invalid date format (use ISO8601)')
-    .toDate()
+    .toDate(),
+  body('expiresIn')
+    .optional()
+    .isString().withMessage('Invalid expiration format'),
+  body('language')
+    .optional()
+    .isString().withMessage('Invalid language format')
 ];
 
 // Controller actions
@@ -23,11 +41,20 @@ exports.createPaste = async (req, res) => {
   }
 
   try {
-    // Handle both expiresAt (API) and expiresIn (frontend) field names
-    const { content, expiresAt, expiresIn } = req.body;
+    const { content, expiresAt, expiresIn, language } = req.body;
+    
+    // Determine the expiration date (API priority to expiresAt, Frontend priority to expiresIn)
+    let finalExpiresAt = null;
+    if (expiresAt) {
+      finalExpiresAt = expiresAt;
+    } else if (expiresIn) {
+      finalExpiresAt = parseDurationToDate(expiresIn);
+    }
+
     const paste = new Paste({ 
-      content, 
-      expiresAt: expiresAt || expiresIn
+      content,
+      language: language || 'plaintext',
+      expiresAt: finalExpiresAt
     });
     await paste.save();
 
