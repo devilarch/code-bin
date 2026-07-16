@@ -84,7 +84,7 @@ async function createPaste() {
         
         // Update URL display and show result container
         pasteUrl.value = fullUrl;
-        resultContainer.style.display = 'block';
+        resultContainer.classList.add('show');
         
         // Show success notification
         showNotification('Paste created successfully!', 'success');
@@ -186,8 +186,8 @@ async function loadPaste(pasteId) {
         
         // Hide editor and show viewer
         document.querySelector('.editor-container').style.display = 'none';
-        pasteViewer.style.display = 'block';
-        resultContainer.style.display = 'none';
+        pasteViewer.style.display = 'flex';
+        resultContainer.classList.remove('show');
         
         // Update line numbers
         updateLineNumbers(pasteContent);
@@ -247,13 +247,13 @@ function initializeRouting() {
     } else {
         // Show editor by default
         if (document.querySelector('.editor-container')) {
-            document.querySelector('.editor-container').style.display = 'block';
+            document.querySelector('.editor-container').style.display = 'flex';
         }
         if (pasteViewer) {
             pasteViewer.style.display = 'none';
         }
         if (resultContainer) {
-            resultContainer.style.display = 'none';
+            resultContainer.classList.remove('show');
         }
     }
 }
