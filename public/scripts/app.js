@@ -345,6 +345,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeButton = document.getElementById('toggle-theme');
     const clearButton = document.getElementById('clear-editor');
     const shortcutsButton = document.getElementById('show-shortcuts');
+    const copyButton = document.getElementById('copy-button');
+    const statsButton = document.getElementById('stats-button');
+    const newPasteButton = document.getElementById('new-paste');
+    const openPasteBtn = document.getElementById('open-paste-btn');
     
     if (createButton) {
         createButton.addEventListener('click', createPaste);
@@ -357,6 +361,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (shortcutsButton) {
         shortcutsButton.addEventListener('click', toggleShortcutsModal);
+    }
+    if (copyButton) {
+        copyButton.addEventListener('click', copyToClipboard);
+    }
+    if (statsButton) {
+        statsButton.addEventListener('click', toggleStats);
+    }
+    if (newPasteButton) {
+        newPasteButton.addEventListener('click', () => window.location.href = '/');
+    }
+    if (openPasteBtn) {
+        openPasteBtn.addEventListener('click', () => {
+            const url = document.getElementById('paste-url').value;
+            if (url) window.open(url, '_blank');
+        });
     }
     
     // Fix: Handle all close buttons (both shortcuts and QR modals)
